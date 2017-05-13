@@ -11,7 +11,6 @@ addons:
     - libelf-dev
     - libdw-dev
     - binutils-dev
-
 before_script:
 - |
   pip install 'travis-cargo<0.2' --user &&
@@ -19,16 +18,10 @@ before_script:
 script:
 - cargo build
 - cargo test
-- if [ "$TRAVIS_RUST_VERSION" = "nightly" ]; then
-      cargo bench --verbose;
-  fi
+- if [ "$TRAVIS_RUST_VERSION" = "nightly" ]; then cargo bench --verbose; fi
 - cargo doc
 after_success:
 - travis-cargo --only stable doc-upload
-# - travis-cargo coveralls --no-sudo --verify
-# Temporary workaround for making coverall.io integration to work.
-# https://github.com/huonw/travis-cargo/issues/58
-# Thanks to https://users.rust-lang.org/t/tutorial-how-to-collect-test-coverages-for-rust-project/650/39.
 - |
   if [ "$TRAVIS_RUST_VERSION" = "stable" ]; then
     wget https://github.com/SimonKagstrom/kcov/archive/v33.tar.gz &&
@@ -41,8 +34,7 @@ after_success:
         --exclude-pattern=/.cargo \
         target/kcov target/debug/usi-*
   fi
-
 env:
   global:
   - TRAVIS_CARGO_NIGHTLY_FEATURE=""
-  - secure: dLvawrNFE1IeBRsaZ+TGDiOoai8dU8/zjDYPvX6dxpjcuQzhMKXvEBEu/6vNSwUK+uSe5W/DnYBywgf4KEOW95r1JVxiVqiaSF4eJG/xXsxzhfD2wvi9UfBsNnGIjxyxhM/tCh4gkaCNLw0BGcJz9t62BDGtgXwQ+rtE8vJKbENnqwS+aGH+GRt59gSeIM3vYjR9l6XPFSmolnp/ustYJ1wyRO2O5Lj777io5WU6u3ZIzZx1OH/yclPPYMSvFEZXQ1SJDnjfN1FgKBlCwdqg9JzTnI35LY7riqdjEXqPVUqYH33LMP023hHCLIOUZi/SHZnFZNncyjBQFhRfZ4sQKvT45v9HmTOTMa0LtbEnapv0+GkLfjipE8/2ke+FGp3XL2ytLFlPHxamwVeDDnAtDH8rYFLhefB3pbsRk0GZExBB/7r+jLXL15ZCPi3mVYWm+M6BW6AHu5ZG8LzpPfy9TAQSsmwYCeH9ylX+/qf0EPUakgKfKRRlsGRQOCVRQkFuIwnHfwMkNL9Ezpbc3VpHcJ2PCDM9U3sxUPGU2jNxCArNtb11NGkSKBQSfZszwZbXL6Ji/GvNW5XV5VYLMh9RDtrjM/sJSrud6xtzGKqYwSvK8H3ppQKc4GjcunhLDDxNMdcZg76YOTXCTOXaBGivsqQ48fHppp1YnWSzts/KP4s=
+  - secure: SDn9Nr1HbyNtmotnbzEG+SFQyseKlxHLVPWsZtCGBy9dfLGYwmOS4GlnvHZvXLly51EnENGNUc/g5/hW15F0urG0PtcE0n/8RSYQ7czAyq1CSzZgjAsHe52e4ENSl0qWUHi/xPuaYVQy1v/O88SyUGMPqmkBWppN87na3qhwcClUUSUtpQzkVz19W+zx55cdWL5agycmYDlb7FZ8rogRqaFP+2XEOrV8RLsjUyp9D4MZU/kcHtzIj4v94Wrz+JTF52fcRbd/ecIQAknZxM1t0HGn6v8aWcz14Y1uDfamkVnKvSvc3EGc60le3SvoFmdRKaHEWH7Ir9ansgjC8jjjvH461tYUDdvMCuY3HwWfVtZxRQoOV4QkWaHT2edYX+Uh77DRRg1tmfjlZdTdcNdjBhCenepJNGjExgJSapwJCo5H4Hjrpi9RSVsOqmDjFTsXHWsc8rVsQNb24rz/1l92xO4U12ChTxT5uWye92nejmgSfXwzR7yipJM+DYsEaq+I2bl5AzDCdruFaFC9ITYxoeYxQZFwLctq4bivxme6J1qIXIpG19TYTnoTFWeoK60QxHHs9ShkY7LbRSmW/QY0DRqCjYHiAiGp5Ty6jIfmZO1vLvEQ1MJAtTBFP8N6SeEtvo70/bRaNrIM5hfOTKr8cEILqSmEHwDASTM++O5YVJY=
