@@ -5,6 +5,8 @@
 
 A library to handle type-safe communication with USI-compatible shogi engines.
 
+[Documentation](https://nozaq.github.io/usi-rs)
+
 ## Usage
 
 ```
