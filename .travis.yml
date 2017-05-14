@@ -1,5 +1,5 @@
 language: rust
-sudo: false
+sudo: required
 rust:
 - nightly
 - beta
@@ -24,15 +24,19 @@ after_success:
 - travis-cargo --only stable doc-upload
 - |
   if [ "$TRAVIS_RUST_VERSION" = "stable" ]; then
-    wget https://github.com/SimonKagstrom/kcov/archive/v33.tar.gz &&
-    tar xzf v33.tar.gz && mkdir kcov-33/build && cd kcov-33/build &&
-    cmake -DCMAKE_INSTALL_PREFIX=~/.local .. && make &&
-    make install &&
+    wget https://github.com/SimonKagstrom/kcov/archive/master.tar.gz &&
+    tar xzf master.tar.gz && cd kcov-master &&
+    mkdir build && cd build &&
+    cmake .. && make && sudo make install &&
     cd ../.. &&
-    ~/.local/bin/kcov --verify \
-        --coveralls-id=$TRAVIS_JOB_ID \
-        --exclude-pattern=/.cargo \
-        target/kcov target/debug/usi-*
+    rm -rf kcov-master &&
+    cargo clean && cargo test --no-run &&
+    for file in target/debug/*-*; do 
+      if [ -x $file ]; then 
+        mkdir -p "target/cov/$(basename $file)"; kcov --exclude-pattern=/.cargo --verify "target/cov/$(basename $file)" "$file";
+      fi
+    done  &&
+    kcov --coveralls-id=$TRAVIS_JOB_ID --merge target/cov target/cov/*
   fi
 env:
   global:
