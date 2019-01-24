@@ -25,12 +25,10 @@
 //! }
 //! ```
 
-extern crate itertools;
-
 mod engine;
 mod error;
 mod gui;
 
-pub use self::error::*;
 pub use self::engine::*;
+pub use self::error::*;
 pub use self::gui::*;

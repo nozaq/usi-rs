@@ -9,6 +9,7 @@ repository = "https://github.com/nozaq/usi-rs"
 documentation = "http://nozaq.github.io/usi-rs"
 readme = "README.md"
 license = "MIT"
+edition = "2018"
 
 [dependencies]
 itertools = "0.8.0"

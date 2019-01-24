@@ -1,12 +1,14 @@
 use std::time::Duration;
 
-use error::Error;
 use super::parser::EngineCommandParser;
+use crate::error::Error;
 
 /// Represents a kind of "option" command value.
 #[derive(Debug)]
 pub enum OptionKind {
-    Check { default: Option<bool> },
+    Check {
+        default: Option<bool>,
+    },
     Spin {
         default: Option<i32>,
         min: Option<i32>,
@@ -16,9 +18,15 @@ pub enum OptionKind {
         default: Option<String>,
         vars: Vec<String>,
     },
-    Button { default: Option<String> },
-    String { default: Option<String> },
-    Filename { default: Option<String> },
+    Button {
+        default: Option<String>,
+    },
+    String {
+        default: Option<String>,
+    },
+    Filename {
+        default: Option<String>,
+    },
 }
 
 /// Represents parameters of "option" command.
@@ -121,48 +129,51 @@ mod tests {
 
     #[test]
     fn parse() {
-        let ok_cases =
-            ["id name Lesserkai",
-             "id author Program Writer",
-             "bestmove 7g7f",
-             "bestmove 8h2b+ ponder 3a2b",
-             "bestmove resign",
-             "bestmove win",
-             "checkmate nomate",
-             "checkmate notimplemented",
-             "checkmate timeout",
-             "checkmate G*8f 9f9g 8f8g 9g9h 8g8h",
-             "info time 1141 depth 3 seldepth 5 nodes 135125 score cp -1521 pv 3a3b L*4h 4c4d",
-             "info nodes 120000 nps 116391 multipv 1 currmove 1 hashfull 104",
-             "info string 7g7f (70%)",
-             "info score cp 100 lowerbound",
-             "info score cp 100 upperbound",
-             "info score mate +",
-             "info score mate -",
-             "info score mate 5",
-             "info score mate -5",
-             "info score mate 5 lowerbound",
-             "info score mate 5 upperbound",
-             "option name UseBook type check default true",
-             "option name Selectivity type spin default 2 min 0 max 4",
-             "option name Style type combo default Normal var Solid var Normal var Risky",
-             "option name ResetLearning type button",
-             "option name BookFile type string default public.bin",
-             "option name LearningFile type filename default <empty>",
-             "readyok",
-             "usiok",
-             "unknown command"];
+        let ok_cases = [
+            "id name Lesserkai",
+            "id author Program Writer",
+            "bestmove 7g7f",
+            "bestmove 8h2b+ ponder 3a2b",
+            "bestmove resign",
+            "bestmove win",
+            "checkmate nomate",
+            "checkmate notimplemented",
+            "checkmate timeout",
+            "checkmate G*8f 9f9g 8f8g 9g9h 8g8h",
+            "info time 1141 depth 3 seldepth 5 nodes 135125 score cp -1521 pv 3a3b L*4h 4c4d",
+            "info nodes 120000 nps 116391 multipv 1 currmove 1 hashfull 104",
+            "info string 7g7f (70%)",
+            "info score cp 100 lowerbound",
+            "info score cp 100 upperbound",
+            "info score mate +",
+            "info score mate -",
+            "info score mate 5",
+            "info score mate -5",
+            "info score mate 5 lowerbound",
+            "info score mate 5 upperbound",
+            "option name UseBook type check default true",
+            "option name Selectivity type spin default 2 min 0 max 4",
+            "option name Style type combo default Normal var Solid var Normal var Risky",
+            "option name ResetLearning type button",
+            "option name BookFile type string default public.bin",
+            "option name LearningFile type filename default <empty>",
+            "readyok",
+            "usiok",
+            "unknown command",
+        ];
 
-        let ng_cases = ["",
-                        "checkmate",
-                        "id foo bar",
-                        "info depth foo",
-                        "info depth 1 seldepth foo",
-                        "info multipv foo",
-                        "info score foo 1",
-                        "info foo bar",
-                        "option foo bar baz",
-                        "option name foo bar"];
+        let ng_cases = [
+            "",
+            "checkmate",
+            "id foo bar",
+            "info depth foo",
+            "info depth 1 seldepth foo",
+            "info multipv foo",
+            "info score foo 1",
+            "info foo bar",
+            "option foo bar baz",
+            "option name foo bar",
+        ];
 
         for (i, c) in ok_cases.iter().enumerate() {
             assert!(EngineCommand::parse(c).is_ok(), "failed at #{}", i);
