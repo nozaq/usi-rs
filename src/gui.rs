@@ -89,31 +89,31 @@ impl ThinkParams {
 impl fmt::Display for ThinkParams {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if self.ponder {
-            try!(write!(f, " ponder"));
+            r#try!(write!(f, " ponder"));
         }
         if let Some(t) = self.btime {
-            try!(write!(f, " btime {}", to_ms(t)));
+            r#try!(write!(f, " btime {}", to_ms(t)));
         }
         if let Some(t) = self.wtime {
-            try!(write!(f, " wtime {}", to_ms(t)));
+            r#try!(write!(f, " wtime {}", to_ms(t)));
         }
         if let Some(t) = self.byoyomi {
-            try!(write!(f, " byoyomi {}", to_ms(t)));
+            r#try!(write!(f, " byoyomi {}", to_ms(t)));
         }
         if let Some(t) = self.binc {
-            try!(write!(f, " binc {}", to_ms(t)));
+            r#try!(write!(f, " binc {}", to_ms(t)));
         }
         if let Some(t) = self.winc {
-            try!(write!(f, " winc {}", to_ms(t)));
+            r#try!(write!(f, " winc {}", to_ms(t)));
         }
         if self.infinite {
-            try!(write!(f, " infinite"));
+            r#try!(write!(f, " infinite"));
         }
         if let Some(mate_opts) = self.mate {
             if let Some(t) = mate_opts {
-                try!(write!(f, " mate {}", to_ms(t)));
+                r#try!(write!(f, " mate {}", to_ms(t)));
             } else {
-                try!(write!(f, " mate infinite"));
+                r#try!(write!(f, " mate infinite"));
             }
         }
 
@@ -177,39 +177,62 @@ mod tests {
 
     #[test]
     fn to_string() {
-        let cases =
-            [("gameover win", GuiCommand::GameOver(GameOverKind::Win)),
-             ("gameover draw", GuiCommand::GameOver(GameOverKind::Draw)),
-             ("gameover lose", GuiCommand::GameOver(GameOverKind::Lose)),
-             ("go btime 60000 wtime 50000 byoyomi 10000",
-              GuiCommand::Go(ThinkParams::new()
-                  .btime(Duration::from_secs(60))
-                  .wtime(Duration::from_secs(50))
-                  .byoyomi(Duration::from_secs(10)))),
-             ("go btime 40000 wtime 50000 binc 10000 winc 10000",
-              GuiCommand::Go(ThinkParams::new()
-                  .btime(Duration::from_secs(40))
-                  .wtime(Duration::from_secs(50))
-                  .binc(Duration::from_secs(10))
-                  .winc(Duration::from_secs(10)))),
-             ("go infinite", GuiCommand::Go(ThinkParams::new().infinite())),
-             ("go mate 60000",
-              GuiCommand::Go(ThinkParams::new().mate(Some(Duration::from_secs(60))))),
-             ("go mate infinite", GuiCommand::Go(ThinkParams::new().mate(None))),
-             ("go ponder", GuiCommand::Go(ThinkParams::new().ponder())),
-             ("isready", GuiCommand::IsReady),
-             ("ponderhit", GuiCommand::Ponderhit),
-             ("position sfen lnsgkgsn1/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL w - 1",
-              GuiCommand::Position("lnsgkgsn1/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL \
-                                    w - 1"
-                  .to_string())),
-             ("setoption name foo", GuiCommand::SetOption("foo".to_string(), None)),
-             ("setoption name foo value bar",
-              GuiCommand::SetOption("foo".to_string(), Some("bar".to_string()))),
-             ("stop", GuiCommand::Stop),
-             ("usi", GuiCommand::Usi),
-             ("usinewgame", GuiCommand::UsiNewGame),
-             ("quit", GuiCommand::Quit)];
+        let cases = [
+            ("gameover win", GuiCommand::GameOver(GameOverKind::Win)),
+            ("gameover draw", GuiCommand::GameOver(GameOverKind::Draw)),
+            ("gameover lose", GuiCommand::GameOver(GameOverKind::Lose)),
+            (
+                "go btime 60000 wtime 50000 byoyomi 10000",
+                GuiCommand::Go(
+                    ThinkParams::new()
+                        .btime(Duration::from_secs(60))
+                        .wtime(Duration::from_secs(50))
+                        .byoyomi(Duration::from_secs(10)),
+                ),
+            ),
+            (
+                "go btime 40000 wtime 50000 binc 10000 winc 10000",
+                GuiCommand::Go(
+                    ThinkParams::new()
+                        .btime(Duration::from_secs(40))
+                        .wtime(Duration::from_secs(50))
+                        .binc(Duration::from_secs(10))
+                        .winc(Duration::from_secs(10)),
+                ),
+            ),
+            ("go infinite", GuiCommand::Go(ThinkParams::new().infinite())),
+            (
+                "go mate 60000",
+                GuiCommand::Go(ThinkParams::new().mate(Some(Duration::from_secs(60)))),
+            ),
+            (
+                "go mate infinite",
+                GuiCommand::Go(ThinkParams::new().mate(None)),
+            ),
+            ("go ponder", GuiCommand::Go(ThinkParams::new().ponder())),
+            ("isready", GuiCommand::IsReady),
+            ("ponderhit", GuiCommand::Ponderhit),
+            (
+                "position sfen lnsgkgsn1/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL w - 1",
+                GuiCommand::Position(
+                    "lnsgkgsn1/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL \
+                     w - 1"
+                        .to_string(),
+                ),
+            ),
+            (
+                "setoption name foo",
+                GuiCommand::SetOption("foo".to_string(), None),
+            ),
+            (
+                "setoption name foo value bar",
+                GuiCommand::SetOption("foo".to_string(), Some("bar".to_string())),
+            ),
+            ("stop", GuiCommand::Stop),
+            ("usi", GuiCommand::Usi),
+            ("usinewgame", GuiCommand::UsiNewGame),
+            ("quit", GuiCommand::Quit),
+        ];
 
         for c in &cases {
             assert_eq!(c.0, c.1.to_string());

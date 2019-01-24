@@ -1,10 +1,12 @@
+use itertools::Itertools;
 use std::str::SplitWhitespace;
 use std::time::Duration;
-use itertools::Itertools;
 
-use error::Error;
-use super::{EngineCommand, BestMoveParams, CheckmateParams, InfoParams, ScoreKind, OptionParams,
-            OptionKind, IdParams};
+use super::{
+    BestMoveParams, CheckmateParams, EngineCommand, IdParams, InfoParams, OptionKind, OptionParams,
+    ScoreKind,
+};
+use crate::error::Error;
 
 pub struct EngineCommandParser<'a> {
     iter: SplitWhitespace<'a>,
@@ -12,7 +14,9 @@ pub struct EngineCommandParser<'a> {
 
 impl<'a> EngineCommandParser<'a> {
     pub fn new(cmd: &str) -> EngineCommandParser {
-        EngineCommandParser { iter: cmd.trim().split_whitespace() }
+        EngineCommandParser {
+            iter: cmd.trim().split_whitespace(),
+        }
     }
 
     pub fn parse(mut self) -> Result<EngineCommand, Error> {
@@ -23,11 +27,11 @@ impl<'a> EngineCommandParser<'a> {
 
         let command = command.unwrap();
         Ok(match command {
-            "bestmove" => try!(self.parse_bestmove()),
-            "checkmate" => try!(self.parse_checkmate()),
-            "id" => try!(self.parse_id()),
-            "info" => try!(self.parse_info()),
-            "option" => try!(self.parse_option()),
+            "bestmove" => r#try!(self.parse_bestmove()),
+            "checkmate" => r#try!(self.parse_checkmate()),
+            "id" => r#try!(self.parse_id()),
+            "info" => r#try!(self.parse_info()),
+            "option" => r#try!(self.parse_option()),
             "readyok" => EngineCommand::ReadyOk,
             "usiok" => EngineCommand::UsiOk,
             _ => EngineCommand::Unknown,
@@ -38,12 +42,13 @@ impl<'a> EngineCommandParser<'a> {
         match (self.iter.next(), self.iter.next(), self.iter.next()) {
             (Some("resign"), None, None) => Ok(EngineCommand::BestMove(BestMoveParams::Resign)),
             (Some("win"), None, None) => Ok(EngineCommand::BestMove(BestMoveParams::Win)),
-            (Some(m), None, None) => {
-                Ok(EngineCommand::BestMove(BestMoveParams::MakeMove(m.to_string(), None)))
-            }
-            (Some(m), Some("ponder"), Some(pm)) => {
-                Ok(EngineCommand::BestMove(BestMoveParams::MakeMove(m.to_string(), Some(pm.to_string()))))
-            }
+            (Some(m), None, None) => Ok(EngineCommand::BestMove(BestMoveParams::MakeMove(
+                m.to_string(),
+                None,
+            ))),
+            (Some(m), Some("ponder"), Some(pm)) => Ok(EngineCommand::BestMove(
+                BestMoveParams::MakeMove(m.to_string(), Some(pm.to_string())),
+            )),
             _ => Err(Error::IllegalSyntax),
         }
     }
@@ -55,7 +60,9 @@ impl<'a> EngineCommandParser<'a> {
             Some("nomate") => Ok(EngineCommand::Checkmate(CheckmateParams::NoMate)),
             Some(s) => {
                 let mut moves = vec![s.to_string()];
-                self.iter.for_each(|s| { moves.push(s.to_string()); });
+                self.iter.for_each(|s| {
+                    moves.push(s.to_string());
+                });
                 Ok(EngineCommand::Checkmate(CheckmateParams::Mate(moves)))
             }
             _ => Err(Error::IllegalSyntax),
@@ -77,7 +84,8 @@ impl<'a> EngineCommandParser<'a> {
         while let Some(kind) = iter.next() {
             match kind {
                 "depth" => {
-                    let depth: i32 = try!(iter.next()
+                    let depth: i32 = r#try!(iter
+                        .next()
                         .and_then(|s| s.parse().ok())
                         .ok_or(Error::IllegalSyntax));
 
@@ -86,7 +94,8 @@ impl<'a> EngineCommandParser<'a> {
                         if peek_kind == "seldepth" {
                             iter.next();
 
-                            sel_depth = Some(try!(iter.next()
+                            sel_depth = Some(r#try!(iter
+                                .next()
                                 .and_then(|s| s.parse().ok())
                                 .ok_or(Error::IllegalSyntax)));
                         }
@@ -95,19 +104,22 @@ impl<'a> EngineCommandParser<'a> {
                     entries.push(InfoParams::Depth(depth, sel_depth));
                 }
                 "time" => {
-                    let ms: u64 = try!(iter.next()
+                    let ms: u64 = r#try!(iter
+                        .next()
                         .and_then(|s| s.parse().ok())
                         .ok_or(Error::IllegalSyntax));
                     entries.push(InfoParams::Time(Duration::from_millis(ms)));
                 }
                 "multipv" => {
-                    let multipv: i32 = try!(iter.next()
+                    let multipv: i32 = r#try!(iter
+                        .next()
                         .and_then(|s| s.parse().ok())
                         .ok_or(Error::IllegalSyntax));
                     entries.push(InfoParams::MultiPv(multipv));
                 }
                 "nodes" => {
-                    let nodes: i32 = try!(iter.next()
+                    let nodes: i32 = r#try!(iter
+                        .next()
                         .and_then(|s| s.parse().ok())
                         .ok_or(Error::IllegalSyntax));
                     entries.push(InfoParams::Nodes(nodes));
@@ -118,69 +130,67 @@ impl<'a> EngineCommandParser<'a> {
                     // "pv" or "str" must be the final item.
                     break;
                 }
-                "score" => {
-                    match (iter.next(), iter.next()) {
-                        (Some("cp"), Some(cp)) => {
-                            let cp: i32 = try!(cp.parse());
+                "score" => match (iter.next(), iter.next()) {
+                    (Some("cp"), Some(cp)) => {
+                        let cp: i32 = r#try!(cp.parse());
 
-                            if let Some(&peek_kind) = iter.peek() {
-                                match peek_kind {
-                                    "lowerbound" => {
-                                        iter.next();
-                                        entries.push(InfoParams::Score(cp, ScoreKind::CpLowerbound));
-                                    }
-                                    "upperbound" => {
-                                        iter.next();
-                                        entries.push(InfoParams::Score(cp, ScoreKind::CpUpperbound));
-                                    }
-                                    _ => {
-                                        entries.push(InfoParams::Score(cp, ScoreKind::CpExact));
-                                    }
+                        if let Some(&peek_kind) = iter.peek() {
+                            match peek_kind {
+                                "lowerbound" => {
+                                    iter.next();
+                                    entries.push(InfoParams::Score(cp, ScoreKind::CpLowerbound));
+                                }
+                                "upperbound" => {
+                                    iter.next();
+                                    entries.push(InfoParams::Score(cp, ScoreKind::CpUpperbound));
+                                }
+                                _ => {
+                                    entries.push(InfoParams::Score(cp, ScoreKind::CpExact));
                                 }
                             }
                         }
-                        (Some("mate"), Some("+")) => {
-                            entries.push(InfoParams::Score(1, ScoreKind::MateSignOnly))
-                        }
-                        (Some("mate"), Some("-")) => {
-                            entries.push(InfoParams::Score(-1, ScoreKind::MateSignOnly))
-                        }
-                        (Some("mate"), Some(ply)) => {
-                            let ply: i32 = try!(ply.parse());
-
-                            if let Some(&peek_kind) = iter.peek() {
-                                match peek_kind {
-                                    "lowerbound" => {
-                                        iter.next();
-                                        entries.push(InfoParams::Score(ply,
-                                                                       ScoreKind::MateLowerbound));
-                                    }
-                                    "upperbound" => {
-                                        iter.next();
-                                        entries.push(InfoParams::Score(ply,
-                                                                       ScoreKind::MateUpperbound));
-                                    }
-                                    _ => {
-                                        entries.push(InfoParams::Score(ply, ScoreKind::MateExact));
-                                    }
-                                }
-                            }
-                        }
-                        _ => return Err(Error::IllegalSyntax),
                     }
-                }
+                    (Some("mate"), Some("+")) => {
+                        entries.push(InfoParams::Score(1, ScoreKind::MateSignOnly))
+                    }
+                    (Some("mate"), Some("-")) => {
+                        entries.push(InfoParams::Score(-1, ScoreKind::MateSignOnly))
+                    }
+                    (Some("mate"), Some(ply)) => {
+                        let ply: i32 = r#try!(ply.parse());
+
+                        if let Some(&peek_kind) = iter.peek() {
+                            match peek_kind {
+                                "lowerbound" => {
+                                    iter.next();
+                                    entries.push(InfoParams::Score(ply, ScoreKind::MateLowerbound));
+                                }
+                                "upperbound" => {
+                                    iter.next();
+                                    entries.push(InfoParams::Score(ply, ScoreKind::MateUpperbound));
+                                }
+                                _ => {
+                                    entries.push(InfoParams::Score(ply, ScoreKind::MateExact));
+                                }
+                            }
+                        }
+                    }
+                    _ => return Err(Error::IllegalSyntax),
+                },
                 "currmove" => {
-                    let currmove = try!(iter.next().ok_or(Error::IllegalSyntax));
+                    let currmove = r#try!(iter.next().ok_or(Error::IllegalSyntax));
                     entries.push(InfoParams::CurrMove(currmove.to_string()));
                 }
                 "hashfull" => {
-                    let hashfull: i32 = try!(iter.next()
+                    let hashfull: i32 = r#try!(iter
+                        .next()
                         .and_then(|s| s.parse().ok())
                         .ok_or(Error::IllegalSyntax));
                     entries.push(InfoParams::HashFull(hashfull));
                 }
                 "nps" => {
-                    let nps: i32 = try!(iter.next()
+                    let nps: i32 = r#try!(iter
+                        .next()
                         .and_then(|s| s.parse().ok())
                         .ok_or(Error::IllegalSyntax));
                     entries.push(InfoParams::Nps(nps));
@@ -205,8 +215,11 @@ impl<'a> EngineCommandParser<'a> {
 
         let opt_type = match self.iter.next() {
             Some("check") => {
-                let default =
-                    self.iter.skip_while(|v| *v == "default").next().and_then(|s| s.parse().ok());
+                let default = self
+                    .iter
+                    .skip_while(|v| *v == "default")
+                    .next()
+                    .and_then(|s| s.parse().ok());
 
                 OptionKind::Check { default: default }
             }
@@ -236,9 +249,11 @@ impl<'a> EngineCommandParser<'a> {
 
                 while let Some(kind) = self.iter.next() {
                     match kind {
-                        "default" => default = self.iter.next().map(parse_default), 
+                        "default" => default = self.iter.next().map(parse_default),
                         "var" => {
-                            self.iter.for_each(|v| { vars.push(v.to_string()); });
+                            self.iter.for_each(|v| {
+                                vars.push(v.to_string());
+                            });
                             break;
                         }
                         _ => {}
@@ -251,20 +266,31 @@ impl<'a> EngineCommandParser<'a> {
                 }
             }
             Some("button") => {
-                let default = self.iter.skip_while(|v| *v == "default").next().map(parse_default);
+                let default = self
+                    .iter
+                    .skip_while(|v| *v == "default")
+                    .next()
+                    .map(parse_default);
 
                 OptionKind::Button { default: default }
             }
             Some("string") => {
-                let default = self.iter.skip_while(|v| *v == "default").next().map(parse_default);
+                let default = self
+                    .iter
+                    .skip_while(|v| *v == "default")
+                    .next()
+                    .map(parse_default);
 
                 OptionKind::String { default: default }
             }
             Some("filename") => {
-                let default = self.iter.skip_while(|v| *v == "default").next().map(parse_default);
+                let default = self
+                    .iter
+                    .skip_while(|v| *v == "default")
+                    .next()
+                    .map(parse_default);
 
                 OptionKind::Filename { default: default }
-
             }
             _ => return Err(Error::IllegalSyntax),
         };
