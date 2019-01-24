@@ -55,7 +55,7 @@ impl<'a> EngineCommandParser<'a> {
             Some("nomate") => Ok(EngineCommand::Checkmate(CheckmateParams::NoMate)),
             Some(s) => {
                 let mut moves = vec![s.to_string()];
-                self.iter.foreach(|s| { moves.push(s.to_string()); });
+                self.iter.for_each(|s| { moves.push(s.to_string()); });
                 Ok(EngineCommand::Checkmate(CheckmateParams::Mate(moves)))
             }
             _ => Err(Error::IllegalSyntax),
@@ -238,7 +238,7 @@ impl<'a> EngineCommandParser<'a> {
                     match kind {
                         "default" => default = self.iter.next().map(parse_default), 
                         "var" => {
-                            self.iter.foreach(|v| { vars.push(v.to_string()); });
+                            self.iter.for_each(|v| { vars.push(v.to_string()); });
                             break;
                         }
                         _ => {}
