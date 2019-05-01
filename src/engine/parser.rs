@@ -27,11 +27,11 @@ impl<'a> EngineCommandParser<'a> {
 
         let command = command.unwrap();
         Ok(match command {
-            "bestmove" => r#try!(self.parse_bestmove()),
-            "checkmate" => r#try!(self.parse_checkmate()),
-            "id" => r#try!(self.parse_id()),
-            "info" => r#try!(self.parse_info()),
-            "option" => r#try!(self.parse_option()),
+            "bestmove" => self.parse_bestmove()?,
+            "checkmate" => self.parse_checkmate()?,
+            "id" => self.parse_id()?,
+            "info" => self.parse_info()?,
+            "option" => self.parse_option()?,
             "readyok" => EngineCommand::ReadyOk,
             "usiok" => EngineCommand::UsiOk,
             _ => EngineCommand::Unknown,
@@ -84,44 +84,45 @@ impl<'a> EngineCommandParser<'a> {
         while let Some(kind) = iter.next() {
             match kind {
                 "depth" => {
-                    let depth: i32 = r#try!(iter
+                    let depth: i32 = iter
                         .next()
                         .and_then(|s| s.parse().ok())
-                        .ok_or(Error::IllegalSyntax));
+                        .ok_or(Error::IllegalSyntax)?;
 
                     let mut sel_depth = None;
                     if let Some(&peek_kind) = iter.peek() {
                         if peek_kind == "seldepth" {
                             iter.next();
 
-                            sel_depth = Some(r#try!(iter
-                                .next()
-                                .and_then(|s| s.parse().ok())
-                                .ok_or(Error::IllegalSyntax)));
+                            sel_depth = Some(
+                                iter.next()
+                                    .and_then(|s| s.parse().ok())
+                                    .ok_or(Error::IllegalSyntax)?,
+                            );
                         }
                     }
 
                     entries.push(InfoParams::Depth(depth, sel_depth));
                 }
                 "time" => {
-                    let ms: u64 = r#try!(iter
+                    let ms: u64 = iter
                         .next()
                         .and_then(|s| s.parse().ok())
-                        .ok_or(Error::IllegalSyntax));
+                        .ok_or(Error::IllegalSyntax)?;
                     entries.push(InfoParams::Time(Duration::from_millis(ms)));
                 }
                 "multipv" => {
-                    let multipv: i32 = r#try!(iter
+                    let multipv: i32 = iter
                         .next()
                         .and_then(|s| s.parse().ok())
-                        .ok_or(Error::IllegalSyntax));
+                        .ok_or(Error::IllegalSyntax)?;
                     entries.push(InfoParams::MultiPv(multipv));
                 }
                 "nodes" => {
-                    let nodes: i32 = r#try!(iter
+                    let nodes: i32 = iter
                         .next()
                         .and_then(|s| s.parse().ok())
-                        .ok_or(Error::IllegalSyntax));
+                        .ok_or(Error::IllegalSyntax)?;
                     entries.push(InfoParams::Nodes(nodes));
                 }
                 "pv" => {
@@ -132,7 +133,7 @@ impl<'a> EngineCommandParser<'a> {
                 }
                 "score" => match (iter.next(), iter.next()) {
                     (Some("cp"), Some(cp)) => {
-                        let cp: i32 = r#try!(cp.parse());
+                        let cp: i32 = cp.parse()?;
 
                         if let Some(&peek_kind) = iter.peek() {
                             match peek_kind {
@@ -157,7 +158,7 @@ impl<'a> EngineCommandParser<'a> {
                         entries.push(InfoParams::Score(-1, ScoreKind::MateSignOnly))
                     }
                     (Some("mate"), Some(ply)) => {
-                        let ply: i32 = r#try!(ply.parse());
+                        let ply: i32 = ply.parse()?;
 
                         if let Some(&peek_kind) = iter.peek() {
                             match peek_kind {
@@ -178,21 +179,21 @@ impl<'a> EngineCommandParser<'a> {
                     _ => return Err(Error::IllegalSyntax),
                 },
                 "currmove" => {
-                    let currmove = r#try!(iter.next().ok_or(Error::IllegalSyntax));
+                    let currmove = iter.next().ok_or(Error::IllegalSyntax)?;
                     entries.push(InfoParams::CurrMove(currmove.to_string()));
                 }
                 "hashfull" => {
-                    let hashfull: i32 = r#try!(iter
+                    let hashfull: i32 = iter
                         .next()
                         .and_then(|s| s.parse().ok())
-                        .ok_or(Error::IllegalSyntax));
+                        .ok_or(Error::IllegalSyntax)?;
                     entries.push(InfoParams::HashFull(hashfull));
                 }
                 "nps" => {
-                    let nps: i32 = r#try!(iter
+                    let nps: i32 = iter
                         .next()
                         .and_then(|s| s.parse().ok())
-                        .ok_or(Error::IllegalSyntax));
+                        .ok_or(Error::IllegalSyntax)?;
                     entries.push(InfoParams::Nps(nps));
                 }
                 "string" => {
