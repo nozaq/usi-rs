@@ -89,31 +89,31 @@ impl ThinkParams {
 impl fmt::Display for ThinkParams {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if self.ponder {
-            r#try!(write!(f, " ponder"));
+            write!(f, " ponder")?;
         }
         if let Some(t) = self.btime {
-            r#try!(write!(f, " btime {}", to_ms(t)));
+            write!(f, " btime {}", to_ms(t))?;
         }
         if let Some(t) = self.wtime {
-            r#try!(write!(f, " wtime {}", to_ms(t)));
+            write!(f, " wtime {}", to_ms(t))?;
         }
         if let Some(t) = self.byoyomi {
-            r#try!(write!(f, " byoyomi {}", to_ms(t)));
+            write!(f, " byoyomi {}", to_ms(t))?;
         }
         if let Some(t) = self.binc {
-            r#try!(write!(f, " binc {}", to_ms(t)));
+            write!(f, " binc {}", to_ms(t))?;
         }
         if let Some(t) = self.winc {
-            r#try!(write!(f, " winc {}", to_ms(t)));
+            write!(f, " winc {}", to_ms(t))?;
         }
         if self.infinite {
-            r#try!(write!(f, " infinite"));
+            write!(f, " infinite")?;
         }
         if let Some(mate_opts) = self.mate {
             if let Some(t) = mate_opts {
-                r#try!(write!(f, " mate {}", to_ms(t)));
+                write!(f, " mate {}", to_ms(t))?;
             } else {
-                r#try!(write!(f, " mate infinite"));
+                write!(f, " mate infinite")?;
             }
         }
 
