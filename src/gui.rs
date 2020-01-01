@@ -19,7 +19,7 @@ impl fmt::Display for GameOverKind {
 }
 
 /// Represents parameters of "go" command.
-#[derive(Debug, Clone)]
+#[derive(Debug, Default, Clone)]
 pub struct ThinkParams {
     ponder: bool,
     btime: Option<Duration>,
@@ -168,7 +168,7 @@ impl fmt::Display for GuiCommand {
 }
 
 fn to_ms(t: Duration) -> u64 {
-    1000 * t.as_secs() + (t.subsec_nanos() as u64) / 1000_000
+    1000 * t.as_secs() + (t.subsec_nanos() as u64) / 1_000_000
 }
 
 #[cfg(test)]
