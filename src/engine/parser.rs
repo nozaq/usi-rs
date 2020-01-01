@@ -222,7 +222,7 @@ impl<'a> EngineCommandParser<'a> {
                     .next()
                     .and_then(|s| s.parse().ok());
 
-                OptionKind::Check { default: default }
+                OptionKind::Check { default }
             }
             Some("spin") => {
                 let mut default = None;
@@ -238,11 +238,7 @@ impl<'a> EngineCommandParser<'a> {
                     }
                 }
 
-                OptionKind::Spin {
-                    default: default,
-                    min: min,
-                    max: max,
-                }
+                OptionKind::Spin { default, min, max }
             }
             Some("combo") => {
                 let mut default = None;
@@ -261,10 +257,7 @@ impl<'a> EngineCommandParser<'a> {
                     }
                 }
 
-                OptionKind::Combo {
-                    default: default,
-                    vars: vars,
-                }
+                OptionKind::Combo { default, vars }
             }
             Some("button") => {
                 let default = self
@@ -273,7 +266,7 @@ impl<'a> EngineCommandParser<'a> {
                     .next()
                     .map(parse_default);
 
-                OptionKind::Button { default: default }
+                OptionKind::Button { default }
             }
             Some("string") => {
                 let default = self
@@ -282,7 +275,7 @@ impl<'a> EngineCommandParser<'a> {
                     .next()
                     .map(parse_default);
 
-                OptionKind::String { default: default }
+                OptionKind::String { default }
             }
             Some("filename") => {
                 let default = self
@@ -291,7 +284,7 @@ impl<'a> EngineCommandParser<'a> {
                     .next()
                     .map(parse_default);
 
-                OptionKind::Filename { default: default }
+                OptionKind::Filename { default }
             }
             _ => return Err(Error::IllegalSyntax),
         };
