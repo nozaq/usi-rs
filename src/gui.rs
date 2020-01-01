@@ -18,6 +18,12 @@ impl fmt::Display for GameOverKind {
     }
 }
 
+#[derive(Debug, Clone)]
+pub enum MateParam {
+    Timeout(Duration),
+    Infinite,
+}
+
 /// Represents parameters of "go" command.
 #[derive(Debug, Default, Clone)]
 pub struct ThinkParams {
@@ -28,7 +34,7 @@ pub struct ThinkParams {
     binc: Option<Duration>,
     winc: Option<Duration>,
     infinite: bool,
-    mate: Option<Option<Duration>>,
+    mate: Option<MateParam>,
 }
 
 impl ThinkParams {
@@ -80,7 +86,7 @@ impl ThinkParams {
         self
     }
 
-    pub fn mate(mut self, t: Option<Duration>) -> ThinkParams {
+    pub fn mate(mut self, t: MateParam) -> ThinkParams {
         self.mate = Some(t);
         self
     }
@@ -109,11 +115,10 @@ impl fmt::Display for ThinkParams {
         if self.infinite {
             write!(f, " infinite")?;
         }
-        if let Some(mate_opts) = self.mate {
-            if let Some(t) = mate_opts {
-                write!(f, " mate {}", to_ms(t))?;
-            } else {
-                write!(f, " mate infinite")?;
+        if let Some(mate_opts) = &self.mate {
+            match *mate_opts {
+                MateParam::Timeout(t) => write!(f, " mate {}", to_ms(t))?,
+                MateParam::Infinite => write!(f, " mate infinite")?,
             }
         }
 
@@ -203,11 +208,13 @@ mod tests {
             ("go infinite", GuiCommand::Go(ThinkParams::new().infinite())),
             (
                 "go mate 60000",
-                GuiCommand::Go(ThinkParams::new().mate(Some(Duration::from_secs(60)))),
+                GuiCommand::Go(
+                    ThinkParams::new().mate(MateParam::Timeout(Duration::from_secs(60))),
+                ),
             ),
             (
                 "go mate infinite",
-                GuiCommand::Go(ThinkParams::new().mate(None)),
+                GuiCommand::Go(ThinkParams::new().mate(MateParam::Infinite)),
             ),
             ("go ponder", GuiCommand::Go(ThinkParams::new().ponder())),
             ("isready", GuiCommand::IsReady),
