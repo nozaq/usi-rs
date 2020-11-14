@@ -218,8 +218,7 @@ impl<'a> EngineCommandParser<'a> {
             Some("check") => {
                 let default = self
                     .iter
-                    .skip_while(|v| *v == "default")
-                    .next()
+                    .find(|v| *v != "default")
                     .and_then(|s| s.parse().ok());
 
                 OptionKind::Check { default }
@@ -260,29 +259,17 @@ impl<'a> EngineCommandParser<'a> {
                 OptionKind::Combo { default, vars }
             }
             Some("button") => {
-                let default = self
-                    .iter
-                    .skip_while(|v| *v == "default")
-                    .next()
-                    .map(parse_default);
+                let default = self.iter.find(|v| *v != "default").map(parse_default);
 
                 OptionKind::Button { default }
             }
             Some("string") => {
-                let default = self
-                    .iter
-                    .skip_while(|v| *v == "default")
-                    .next()
-                    .map(parse_default);
+                let default = self.iter.find(|v| *v != "default").map(parse_default);
 
                 OptionKind::String { default }
             }
             Some("filename") => {
-                let default = self
-                    .iter
-                    .skip_while(|v| *v == "default")
-                    .next()
-                    .map(parse_default);
+                let default = self.iter.find(|v| *v != "default").map(parse_default);
 
                 OptionKind::Filename { default }
             }
