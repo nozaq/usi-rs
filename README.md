@@ -11,9 +11,9 @@ A library to handle type-safe communication with USI-compatible shogi engines.
 
 ## Usage
 
-```
+```toml
 [dependencies]
-usi = "0.5"
+usi = "0.6"
 ```
 
 ## License

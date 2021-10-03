@@ -2,9 +2,16 @@
 ## [Unreleased]
 
 
+<a name="0.6.0"></a>
+## [0.6.0] - 2021-10-03
+### Feat
+- add UsiEngineHandler#prepare method
+
+
 <a name="0.5.0"></a>
 ## [0.5.0] - 2021-10-03
 ### Feat
+- support USI engine communications
 - support USI engine communications
 
 
@@ -38,7 +45,8 @@
 - upgrade itertools to v0.8.0
 
 
-[Unreleased]: https://github.com/nozaq/shogi-rs/compare/0.5.0...HEAD
+[Unreleased]: https://github.com/nozaq/shogi-rs/compare/0.6.0...HEAD
+[0.6.0]: https://github.com/nozaq/shogi-rs/compare/0.5.0...0.6.0
 [0.5.0]: https://github.com/nozaq/shogi-rs/compare/0.4.1...0.5.0
 [0.4.1]: https://github.com/nozaq/shogi-rs/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/nozaq/shogi-rs/compare/0.3.0...0.4.0

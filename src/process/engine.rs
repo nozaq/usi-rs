@@ -38,11 +38,13 @@ impl EngineInfo {
 /// let mut handler = UsiEngineHandler::spawn("/path/to/usi_engine", "/path/to/working_dir").unwrap();
 ///
 /// // Get the USI engine information.
-/// let info = handler.prepare().unwrap();
+/// let info = handler.get_info().unwrap();
 /// assert_eq!("engine name", info.name());
 ///
-/// // Set options.
+/// // Set options and prepare the engine.
 /// handler.send_command(&GuiCommand::SetOption("USI_Ponder".to_string(), Some("true".to_string()))).unwrap();
+/// handler.prepare().unwrap();
+/// handler.send_command(&GuiCommand::UsiNewGame).unwrap();
 ///
 /// // Start listening to the engine output.
 /// // You can pass the closure which will be called
@@ -95,9 +97,11 @@ impl UsiEngineHandler {
         })
     }
 
-    /// Bootstrap the engine and returns a metadata such as an engine name and available options.
+    /// Request metadata such as a name and available options.
+    /// Internally `get_info()` sends `usi` command and
+    /// records `id` and `option` commands until `usiok` is received.
     /// Returns `Error::IllegalOperation` when called after `listen` method.
-    pub fn prepare(&mut self) -> Result<EngineInfo, Error> {
+    pub fn get_info(&mut self) -> Result<EngineInfo, Error> {
         let reader = match &mut self.reader {
             Some(r) => Ok(r),
             None => Err(Error::IllegalOperation),
@@ -143,6 +147,26 @@ impl UsiEngineHandler {
         Ok(info)
     }
 
+    /// Prepare the engine to be ready to start a new game.
+    /// Internally, `prepare()` sends `isready` command and waits until `readyok` is received.
+    /// Returns `Error::IllegalOperation` when called after `listen` method.
+    pub fn prepare(&mut self) -> Result<(), Error> {
+        let reader = match &mut self.reader {
+            Some(r) => Ok(r),
+            None => Err(Error::IllegalOperation),
+        }?;
+
+        self.writer.send(&GuiCommand::IsReady)?;
+        loop {
+            let output = reader.next_command()?;
+
+            if let Some(EngineCommand::ReadyOk) = output.response() {
+                break;
+            }
+        }
+
+        Ok(())
+    }
     /// Sends a command to the engine.
     pub fn send_command(&mut self, command: &GuiCommand) -> Result<(), Error> {
         self.writer.send(command)
