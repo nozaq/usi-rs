@@ -2,6 +2,7 @@ use std::fmt;
 use std::time::Duration;
 
 /// Represents parameters of "gameover" command.
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub enum GameOverKind {
     Win,
     Lose,
@@ -18,14 +19,14 @@ impl fmt::Display for GameOverKind {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub enum MateParam {
     Timeout(Duration),
     Infinite,
 }
 
 /// Represents parameters of "go" command.
-#[derive(Debug, Default, Clone)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash, Default)]
 pub struct ThinkParams {
     ponder: bool,
     btime: Option<Duration>,
@@ -39,16 +40,7 @@ pub struct ThinkParams {
 
 impl ThinkParams {
     pub fn new() -> ThinkParams {
-        ThinkParams {
-            ponder: false,
-            btime: None,
-            wtime: None,
-            byoyomi: None,
-            binc: None,
-            winc: None,
-            infinite: false,
-            mate: None,
-        }
+        ThinkParams::default()
     }
 
     pub fn ponder(mut self) -> ThinkParams {
@@ -139,6 +131,7 @@ impl fmt::Display for ThinkParams {
 ///
 /// assert_eq!("go btime 1000 wtime 2000", cmd.to_string());
 /// ```
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub enum GuiCommand {
     GameOver(GameOverKind),
     Go(ThinkParams),

@@ -1,37 +1,19 @@
-use std::error;
-use std::fmt;
-use std::num::ParseIntError;
+use thiserror::Error;
 
-/// The error type for USI command conversions.
-#[derive(Debug)]
+#[derive(Error, Debug)]
 pub enum Error {
+    #[error("illegal USI command syntax")]
     IllegalSyntax,
-}
 
-impl fmt::Display for Error {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match *self {
-            Error::IllegalSyntax => write!(f, "illegal USI command syntax"),
-        }
-    }
-}
+    #[error("illegal USI command syntax")]
+    IllegalNumberFormat(#[from] std::num::ParseIntError),
 
-impl error::Error for Error {
-    fn description(&self) -> &str {
-        match *self {
-            Error::IllegalSyntax => "illegal USI command syntax",
-        }
-    }
+    #[error("the engine already started listening")]
+    IllegalOperation,
 
-    fn cause(&self) -> Option<&dyn error::Error> {
-        match *self {
-            Error::IllegalSyntax => None,
-        }
-    }
-}
+    #[error("IO error occurred when communicating with the engine")]
+    EngineIo(#[from] std::io::Error),
 
-impl From<ParseIntError> for Error {
-    fn from(_: ParseIntError) -> Error {
-        Error::IllegalSyntax
-    }
+    #[error("An error occurred inside the external handler")]
+    HandlerError(#[from] Box<dyn std::error::Error + Send + Sync>),
 }
