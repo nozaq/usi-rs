@@ -2,6 +2,12 @@
 ## [Unreleased]
 
 
+<a name="0.5.0"></a>
+## [0.5.0] - 2021-10-03
+### Feat
+- support USI engine communications
+
+
 <a name="0.4.1"></a>
 ## [0.4.1] - 2021-08-15
 
@@ -32,7 +38,8 @@
 - upgrade itertools to v0.8.0
 
 
-[Unreleased]: https://github.com/nozaq/shogi-rs/compare/0.4.1...HEAD
+[Unreleased]: https://github.com/nozaq/shogi-rs/compare/0.5.0...HEAD
+[0.5.0]: https://github.com/nozaq/shogi-rs/compare/0.4.1...0.5.0
 [0.4.1]: https://github.com/nozaq/shogi-rs/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/nozaq/shogi-rs/compare/0.3.0...0.4.0
 [0.3.0]: https://github.com/nozaq/shogi-rs/compare/0.2.0...0.3.0

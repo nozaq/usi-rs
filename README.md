@@ -13,7 +13,7 @@ A library to handle type-safe communication with USI-compatible shogi engines.
 
 ```
 [dependencies]
-usi = "0.4"
+usi = "0.5"
 ```
 
 ## License

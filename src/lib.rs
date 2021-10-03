@@ -1,7 +1,11 @@
-//! Types representing commands defined in USI protocol.
+//! A module for working with USI protocol in a type-safe way.
 //!
 //! USI protocol defines commands sent from either GUIs or engines.
-//! Detail about USI protocol is found at http://www.geocities.jp/shogidokoro/usi.html.
+//! Detail about USI protocol can be found at <http://www.geocities.jp/shogidokoro/usi.html>.
+//!
+//! # Data types representing commands defined in USI protocol.
+//!
+//! `GuiCommand` and `EngineCommand` represents input/output commands defined in the protocol.
 //!
 //! # Examples
 //!
@@ -24,11 +28,46 @@
 //!     _ => unreachable!(),
 //! }
 //! ```
-
-mod engine;
+//!
+//! # Working with a USI engine process
+//!
+//! `UsiEngineHandler` can be used to spawn the USI engine process.
+//! You can send `GuiCommand`s and receive `EngineCommand`.
+//!
+//! # Examples
+//! ```no_run
+//! use usi::{BestMoveParams, Error, EngineCommand, GuiCommand, UsiEngineHandler};
+//!
+//! let mut handler = UsiEngineHandler::spawn("/path/to/usi_engine", "/path/to/working_dir").unwrap();
+//!
+//! // Get the USI engine information.
+//! let info = handler.prepare().unwrap();
+//! assert_eq!("engine name", info.name());
+//!
+//! // Set options.
+//! handler.send_command(&GuiCommand::SetOption("USI_Ponder".to_string(), Some("true".to_string()))).unwrap();
+//!
+//! // Start listening to the engine output.
+//! // You can pass the closure which will be called
+//! //   everytime new command is received from the engine.
+//! handler.listen(move |output| -> Result<(), Error> {
+//!     match output.response() {
+//!         Some(EngineCommand::BestMove(BestMoveParams::MakeMove(
+//!                      ref best_move_sfen,
+//!                      ref ponder_move,
+//!                 ))) => {
+//!                     assert_eq!("5g5f", best_move_sfen);
+//!                 }
+//!         _ => {}
+//!     }
+//!     Ok(())
+//! }).unwrap();
+//! handler.send_command(&GuiCommand::Usi).unwrap();
+//! ```
 mod error;
-mod gui;
+mod process;
+mod protocol;
 
-pub use self::engine::*;
 pub use self::error::*;
-pub use self::gui::*;
+pub use self::process::*;
+pub use self::protocol::*;

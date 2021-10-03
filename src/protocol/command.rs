@@ -4,7 +4,7 @@ use super::parser::EngineCommandParser;
 use crate::error::Error;
 
 /// Represents a kind of "option" command value.
-#[derive(Debug)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub enum OptionKind {
     Check {
         default: Option<bool>,
@@ -30,14 +30,14 @@ pub enum OptionKind {
 }
 
 /// Represents parameters of "option" command.
-#[derive(Debug)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct OptionParams {
     pub name: String,
     pub value: OptionKind,
 }
 
 /// Represents a kind of "score" parameter value in "info" command.
-#[derive(Debug)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub enum ScoreKind {
     CpExact,
     CpLowerbound,
@@ -49,7 +49,7 @@ pub enum ScoreKind {
 }
 
 /// Represents parameters of "info" command.
-#[derive(Debug)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub enum InfoParams {
     CurrMove(String),
     Depth(i32, Option<i32>),
@@ -64,7 +64,7 @@ pub enum InfoParams {
 }
 
 /// Represents parameters of "checkmate" command.
-#[derive(Debug)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub enum CheckmateParams {
     Mate(Vec<String>),
     NoMate,
@@ -73,7 +73,7 @@ pub enum CheckmateParams {
 }
 
 /// Represents parameters of "bestmove" command.
-#[derive(Debug)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub enum BestMoveParams {
     MakeMove(String, Option<String>),
     Resign,
@@ -81,7 +81,7 @@ pub enum BestMoveParams {
 }
 
 /// Represents parameters of "id" command.
-#[derive(Debug)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub enum IdParams {
     Name(String),
     Author(String),
@@ -103,7 +103,7 @@ pub enum IdParams {
 ///     _ => unreachable!(),
 /// }
 /// ```
-#[derive(Debug)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub enum EngineCommand {
     Id(IdParams),
     BestMove(BestMoveParams),
