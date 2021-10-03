@@ -41,11 +41,13 @@
 //! let mut handler = UsiEngineHandler::spawn("/path/to/usi_engine", "/path/to/working_dir").unwrap();
 //!
 //! // Get the USI engine information.
-//! let info = handler.prepare().unwrap();
+//! let info = handler.get_info().unwrap();
 //! assert_eq!("engine name", info.name());
 //!
 //! // Set options.
 //! handler.send_command(&GuiCommand::SetOption("USI_Ponder".to_string(), Some("true".to_string()))).unwrap();
+//! handler.prepare().unwrap();
+//! handler.send_command(&GuiCommand::UsiNewGame).unwrap();
 //!
 //! // Start listening to the engine output.
 //! // You can pass the closure which will be called
