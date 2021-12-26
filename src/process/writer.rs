@@ -24,7 +24,7 @@ pub struct GuiCommandWriter<W: Write> {
 }
 
 impl<W: Write> GuiCommandWriter<W> {
-    pub fn new(writer: W) -> GuiCommandWriter<W> {
+    pub fn new(writer: W) -> Self {
         GuiCommandWriter { writer }
     }
 

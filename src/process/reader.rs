@@ -45,7 +45,7 @@ pub struct EngineCommandReader<R: BufRead> {
 }
 
 impl<R: BufRead> EngineCommandReader<R> {
-    pub fn new(receive: R) -> EngineCommandReader<R> {
+    pub fn new(receive: R) -> Self {
         EngineCommandReader { receive }
     }
 

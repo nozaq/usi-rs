@@ -80,7 +80,7 @@ impl UsiEngineHandler {
     pub fn spawn<P: AsRef<OsStr>, Q: AsRef<Path>>(
         engine_path: P,
         working_dir: Q,
-    ) -> Result<UsiEngineHandler, Error> {
+    ) -> Result<Self, Error> {
         let mut process = Command::new(engine_path)
             .current_dir(working_dir)
             .stdin(Stdio::piped())
