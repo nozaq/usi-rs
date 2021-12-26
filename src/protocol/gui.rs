@@ -39,46 +39,54 @@ pub struct ThinkParams {
 }
 
 impl ThinkParams {
-    pub fn new() -> ThinkParams {
+    pub fn new() -> Self {
         ThinkParams::default()
     }
 
-    pub fn ponder(mut self) -> ThinkParams {
+    #[must_use]
+    pub fn ponder(mut self) -> Self {
         self.ponder = true;
         self
     }
 
-    pub fn btime(mut self, t: Duration) -> ThinkParams {
+    #[must_use]
+    pub fn btime(mut self, t: Duration) -> Self {
         self.btime = Some(t);
         self
     }
 
-    pub fn wtime(mut self, t: Duration) -> ThinkParams {
+    #[must_use]
+    pub fn wtime(mut self, t: Duration) -> Self {
         self.wtime = Some(t);
         self
     }
 
-    pub fn byoyomi(mut self, t: Duration) -> ThinkParams {
+    #[must_use]
+    pub fn byoyomi(mut self, t: Duration) -> Self {
         self.byoyomi = Some(t);
         self
     }
 
-    pub fn binc(mut self, t: Duration) -> ThinkParams {
+    #[must_use]
+    pub fn binc(mut self, t: Duration) -> Self {
         self.binc = Some(t);
         self
     }
 
-    pub fn winc(mut self, t: Duration) -> ThinkParams {
+    #[must_use]
+    pub fn winc(mut self, t: Duration) -> Self {
         self.winc = Some(t);
         self
     }
 
-    pub fn infinite(mut self) -> ThinkParams {
+    #[must_use]
+    pub fn infinite(mut self) -> Self {
         self.infinite = true;
         self
     }
 
-    pub fn mate(mut self, t: MateParam) -> ThinkParams {
+    #[must_use]
+    pub fn mate(mut self, t: MateParam) -> Self {
         self.mate = Some(t);
         self
     }
