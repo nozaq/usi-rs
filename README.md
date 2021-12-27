@@ -1,7 +1,7 @@
 # usi-rs
 
 [![Github Actions](https://github.com/nozaq/usi-rs/workflows/build/badge.svg)](https://github.com/nozaq/usi-rs/actions?workflow=build)
-[![Coverage Status](https://coveralls.io/repos/github/nozaq/usi-rs/badge.svg?branch=master)](https://coveralls.io/github/nozaq/usi-rs?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/nozaq/usi-rs/badge.svg)](https://coveralls.io/github/nozaq/usi-rs)
 [![crates.io](https://img.shields.io/crates/v/usi.svg)](https://crates.io/crates/usi)
 [![docs.rs](https://docs.rs/usi/badge.svg)](https://docs.rs/usi)
 
