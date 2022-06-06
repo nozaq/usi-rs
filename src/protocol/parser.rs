@@ -15,7 +15,7 @@ pub struct EngineCommandParser<'a> {
 impl<'a> EngineCommandParser<'a> {
     pub fn new(cmd: &str) -> EngineCommandParser {
         EngineCommandParser {
-            iter: cmd.trim().split_whitespace(),
+            iter: cmd.split_whitespace(),
         }
     }
 
