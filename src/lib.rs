@@ -1,7 +1,7 @@
 //! A module for working with USI protocol in a type-safe way.
 //!
 //! USI protocol defines commands sent from either GUIs or engines.
-//! Detail about USI protocol can be found at <http://www.geocities.jp/shogidokoro/usi.html>.
+//! Detail about USI protocol can be found at <http://shogidokoro.starfree.jp/usi.html>.
 //!
 //! # Data types representing commands defined in USI protocol.
 //!
