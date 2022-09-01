@@ -6,7 +6,7 @@
 [![docs.rs](https://docs.rs/usi/badge.svg)](https://docs.rs/usi)
 
 A library to handle type-safe communication with USI-compatible shogi engines.
-USI protocol defines commands sent from either GUIs or engines. Detail about USI protocol can be found at http://www.geocities.jp/shogidokoro/usi.html.
+USI protocol defines commands sent from either GUIs or engines. Detail about USI protocol can be found at <http://shogidokoro.starfree.jp/usi.html>.
 
 [Documentation](https://docs.rs/usi)
 
