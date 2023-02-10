@@ -156,14 +156,14 @@ pub enum GuiCommand {
 impl fmt::Display for GuiCommand {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            GuiCommand::GameOver(ref r) => write!(f, "gameover {}", r),
-            GuiCommand::Go(ref opt) => write!(f, "go{}", opt),
+            GuiCommand::GameOver(ref r) => write!(f, "gameover {r}"),
+            GuiCommand::Go(ref opt) => write!(f, "go{opt}"),
             GuiCommand::IsReady => write!(f, "isready"),
             GuiCommand::Ponderhit => write!(f, "ponderhit"),
-            GuiCommand::Position(ref s) => write!(f, "position sfen {}", s),
-            GuiCommand::SetOption(ref n, None) => write!(f, "setoption name {}", n),
+            GuiCommand::Position(ref s) => write!(f, "position sfen {s}"),
+            GuiCommand::SetOption(ref n, None) => write!(f, "setoption name {n}"),
             GuiCommand::SetOption(ref n, Some(ref v)) => {
-                write!(f, "setoption name {} value {}", n, v)
+                write!(f, "setoption name {n} value {v}")
             }
             GuiCommand::Stop => write!(f, "stop"),
             GuiCommand::Usi => write!(f, "usi"),
