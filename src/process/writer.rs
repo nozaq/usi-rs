@@ -29,7 +29,7 @@ impl<W: Write> GuiCommandWriter<W> {
     }
 
     pub fn send(&mut self, command: &GuiCommand) -> Result<(), Error> {
-        let s = format!("{}\n", command);
+        let s = format!("{command}\n");
         self.writer.write_all(s.as_bytes())?;
         self.writer.flush()?;
 

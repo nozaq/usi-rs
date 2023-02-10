@@ -176,11 +176,11 @@ mod tests {
         ];
 
         for (i, c) in ok_cases.iter().enumerate() {
-            assert!(EngineCommand::parse(c).is_ok(), "failed at #{}", i);
+            assert!(EngineCommand::parse(c).is_ok(), "failed at #{i}");
         }
 
         for (i, c) in ng_cases.iter().enumerate() {
-            assert!(EngineCommand::parse(c).is_err(), "failed at #{}", i);
+            assert!(EngineCommand::parse(c).is_err(), "failed at #{i}");
         }
     }
 }
