@@ -12,7 +12,7 @@ license = "MIT"
 edition = "2021"
 
 [dependencies]
-itertools = "0.12"
+itertools = "0.13"
 thiserror = "1.0"
 
 [badges]
